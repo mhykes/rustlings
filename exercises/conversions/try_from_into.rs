@@ -5,7 +5,7 @@
 // You can read more about it at https://doc.rust-lang.org/std/convert/trait.TryFrom.html
 // Execute `rustlings hint try_from_into` or use the `hint` watch subcommand for a hint.
 
-use std::convert::{TryFrom, TryInto};
+use std::{convert::{TryFrom, TryInto}};
 
 #[derive(Debug, PartialEq)]
 struct Color {
@@ -23,7 +23,7 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
+// I AM DONE
 
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
@@ -34,10 +34,24 @@ enum IntoColorError {
 // but the slice implementation needs to check the slice length!
 // Also note that correct RGB color values must be integers in the 0..=255 range.
 
+fn validColorInt(i: i16) -> bool {
+    0 <= i && i <= 255
+}
+
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (r,g,b) = tuple;
+        if validColorInt(r) && validColorInt(g) && validColorInt(b) {
+            return Ok(Color {
+                red: r as u8,
+                green: g as u8,
+                blue: b as u8
+            });
+        } else {
+            return Err(IntoColorError::IntConversion);
+        }
     }
 }
 
@@ -45,6 +59,16 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let [r, g, b] = arr;
+        if validColorInt(r) && validColorInt(g) && validColorInt(b) {
+            return Ok(Color {
+                red: r as u8,
+                green: g as u8,
+                blue: b as u8
+            });
+        } else {
+            return Err(IntoColorError::IntConversion);
+        }
     }
 }
 
@@ -52,6 +76,18 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+
+        let [r, g, b] = slice else { return Err(IntoColorError::BadLen); };
+
+        if validColorInt(*r) && validColorInt(*g) && validColorInt(*b) {
+            return Ok(Color {
+                red: *r as u8,
+                green: *g as u8,
+                blue: *b as u8
+            });
+        } else {
+            return Err(IntoColorError::IntConversion);
+        }
     }
 }
 

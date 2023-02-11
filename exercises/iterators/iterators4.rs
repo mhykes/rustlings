@@ -1,7 +1,33 @@
 // iterators4.rs
 // Execute `rustlings hint iterators4` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
+// I AM DONE
+
+struct Integers {
+    cur: u64,
+    max: u64
+}
+
+impl Integers {
+    fn new(max: u64) -> Integers {
+        Integers {
+            cur: 0,
+            max: max
+        }
+    }
+}
+
+impl Iterator for Integers {
+    type Item = u64;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.cur < self.max {
+            self.cur += 1;
+            Some(self.cur)
+        } else {
+            None
+        }
+    }
+}
 
 pub fn factorial(num: u64) -> u64 {
     // Complete this function to return the factorial of num
@@ -13,6 +39,9 @@ pub fn factorial(num: u64) -> u64 {
     // For an extra challenge, don't use:
     // - recursion
     // Execute `rustlings hint iterators4` for hints.
+    let ints = Integers::new(num);
+    let factorial:u64 = ints.fold(1, |acc, i| -> u64 {acc*i});
+    factorial
 }
 
 #[cfg(test)]
